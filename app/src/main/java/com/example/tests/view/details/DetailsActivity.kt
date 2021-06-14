@@ -1,18 +1,23 @@
 package com.example.tests.view.details
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.example.tests.R
 import com.example.tests.presenter.details.DetailsPresenter
 import com.example.tests.presenter.details.PresenterDetailsContract
+import kotlinx.android.synthetic.main.activity_details.*
+import java.util.*
 
 class DetailsActivity : AppCompatActivity(), ViewDetailsContract {
 
-    private val presenter: PresenterDetailsContract = DetailsPresenter(this)
+    private val presenter: PresenterDetailsContract = DetailsPresenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
+        presenter.onAttach(this)
         setUI()
     }
 
@@ -33,6 +38,11 @@ class DetailsActivity : AppCompatActivity(), ViewDetailsContract {
             String.format(Locale.getDefault(), getString(R.string.results_count), count)
     }
 
+    override fun onDestroy() {
+        presenter.onDetach()
+        super.onDestroy()
+    }
+
     companion object {
 
         const val TOTAL_COUNT_EXTRA = "TOTAL_COUNT_EXTRA"
@@ -43,4 +53,5 @@ class DetailsActivity : AppCompatActivity(), ViewDetailsContract {
             }
         }
     }
+
 }
