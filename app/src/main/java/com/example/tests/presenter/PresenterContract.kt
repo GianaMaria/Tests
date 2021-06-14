@@ -1,3 +1,8 @@
 package com.example.tests.presenter
 
-internal interface PresenterContract {}
+import com.example.tests.view.ViewContract
+
+internal interface PresenterContract {
+    fun onAttach(viewContract: ViewContract)
+    fun onDetach()
+}
