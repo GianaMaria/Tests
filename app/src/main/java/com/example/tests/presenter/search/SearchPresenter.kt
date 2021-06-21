@@ -1,18 +1,27 @@
 package com.example.tests.presenter.search
 
 import com.example.tests.model.SearchResponse
+import com.example.tests.presenter.RepositoryContract
 import com.example.tests.repository.GitHubRepository
+import com.example.tests.repository.RepositoryCallback
+import com.example.tests.view.ViewContract
 import com.example.tests.view.search.ViewSearchContract
 import retrofit2.Response
 
 internal class SearchPresenter internal constructor(
     private val viewContract: ViewSearchContract,
-    private val repository: GitHubRepository
-) : PresenterSearchContract, GitHubRepository.GitHubRepositoryCallback {
+    private val repository: RepositoryContract
+) : PresenterSearchContract, RepositoryCallback {
+
+    var viewContractTestNull: ViewSearchContract? = null
 
     override fun searchGitHub(searchQuery: String) {
         viewContract.displayLoading(true)
         repository.searchGithub(searchQuery, this)
+    }
+
+    override fun onAttach(viewContract: ViewContract) {
+        viewContractTestNull = viewContract as ViewSearchContract
     }
 
     override fun handleGitHubResponse(response: Response<SearchResponse?>?) {
@@ -37,5 +46,9 @@ internal class SearchPresenter internal constructor(
     override fun handleGitHubError() {
         viewContract.displayLoading(false)
         viewContract.displayError()
+    }
+
+    override fun onDetach() {
+        viewContractTestNull = null
     }
 }

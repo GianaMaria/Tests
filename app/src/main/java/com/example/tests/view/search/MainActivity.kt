@@ -1,8 +1,11 @@
 package com.example.tests.view.search
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.tests.R
 import com.example.tests.model.SearchResult
 import com.example.tests.presenter.search.PresenterSearchContract
@@ -10,8 +13,11 @@ import com.example.tests.presenter.search.SearchPresenter
 import com.example.tests.repository.GitHubApi
 import com.example.tests.repository.GitHubRepository
 import com.example.tests.view.details.DetailsActivity
+import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 
 class MainActivity : AppCompatActivity(), ViewSearchContract {
 
@@ -39,7 +45,7 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
     }
 
     private fun setQueryListener() {
-        searchEditText.setOnEditorActionListener(OnEditorActionListener { _, actionId, _ ->
+        searchEditText.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = searchEditText.text.toString()
                 if (query.isNotBlank()) {
@@ -58,6 +64,7 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         })
     }
 
+
     private fun createRepository(): GitHubRepository {
         return GitHubRepository(createRetrofit().create(GitHubApi::class.java))
     }
@@ -73,6 +80,16 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         searchResults: List<SearchResult>,
         totalCount: Int
     ) {
+        with(totalCountTextView) {
+            visibility = android.view.View.VISIBLE
+            text =
+                String.format(
+                    java.util.Locale.getDefault(),
+                    getString(R.string.results_count),
+                    totalCount
+                )
+        }
+
         this.totalCount = totalCount
         adapter.updateResults(searchResults)
     }
